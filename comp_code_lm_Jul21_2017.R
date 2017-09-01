@@ -163,8 +163,12 @@ ggplot(GG_USSR_Inc[GG_USSR_Inc$prop_high>.42,] %>% mutate(group = paste(Country,
   facet_wrap(~group) + geom_smooth(method='lm',formula=y~x, show.legend = TRUE)
 
 dem_rdd<-na.omit(USSR_RDD[,c("Country", "Year","prop_high", 
-                            "Income_Pro", "Var",  "threes", "prop_high_dummy",
-                            "polity_dummy")])
+                            "Income_Pro",
+                          #  "Var",  "threes", 
+                            "prop_high_dummy",
+                            "polity_dummy"
+                  #        , "GDP_cap"
+                          )])
 
 summary(felm(Income_Pro~as.factor(prop_high>.49)*Year|Country, data = dem_rdd[dem_rdd$prop_high<.8 & dem_rdd$prop_high>.2,]))
 felm_USSR_dem<-felm(Income_Pro~as.factor(prop_high>.49)*Year|Country, data = dem_rdd[dem_rdd$prop_high<.8 & dem_rdd$prop_high>.2,])
@@ -175,7 +179,13 @@ felm_USSR_dem<-felm(Income_Pro~as.factor(prop_high>.49)*Year|Country, data = dem
 felm_USSR_dem1<-felm(Income_Pro~prop_high*Year|Country, data = dem_rdd)
 stargazer(felm_USSR_dem, felm_USSR_dem1)
 
-summary(felm(Income_Pro~prop_high*Year|Country, data = dem_rdd))
+summary(felm(Income_Pro~prop_high*Year
+            # +log(GDP_cap)
+             |Country, data = dem_rdd))
+summary(felm(Income_Pro~as.factor(prop_high>.49)*Year
+           #   +log(GDP_cap)
+             |Country, data = dem_rdd))
+
 
 dem_rdd<-na.omit(USSR_RDD[,c("Country", "Year","prop_high", 
                              "Diff_5_bef_aft", "Var",  "threes", "prop_high_dummy",
